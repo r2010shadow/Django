@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.shortcuts import reverse
 
 
 class Category(models.Model):
@@ -43,3 +44,10 @@ class Entry(models.Model):
         ordering = ['-created_time']
         verbose_name = '博客正文'
         verbose_name_plural = verbose_name
+
+    def get_absolute_url(self):
+        return reverse("blog:blog_detail", kwargs={"blog_id": self.id})
+
+    def increase_visiting(self):
+        self.visiting += 1
+        self.save(update_fields=['visiting'])

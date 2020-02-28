@@ -221,7 +221,7 @@ def page_error(request):
     return render(request, 'blog/500.html', locals())
 
 
-def replay(request, comment_id):
+def reply(request, comment_id):
     if not request.session.get('login', None) and not request.user.is_authenticated():
         return redirect('/')
     parent_comment = get_object_or_404(comment_models.Comment, id=comment_id)

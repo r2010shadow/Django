@@ -1,8 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render,get_object_or_404,redirect
 from . import models
 import markdown, pygments
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
+
 
 
 def make_paginator(objects, page, num=3):
@@ -130,7 +131,8 @@ def index(request):
 
 
 def detail(request, blog_id):
-    entry = models.Entry.objects.get(id=blog_id)  # detail.html
+    #entry = models.Entry.objects.get(id=blog_id)  # detail.html
+    entry = get_object_or_404(models.Entry, id=blog_id)
 
     md = markdown.Markdown(extensions=[
         'markdown.extensions.extra',
@@ -186,3 +188,19 @@ def archives(request, year, month):
     entry_list, paginator = make_paginator(entries, page)
     page_data = pagination_data(paginator, page)
     return render(request, 'blog/index.html', locals())
+
+
+
+#def permission_denied(request, exception, template_name='blog/403.html'):
+def permission_denied(request, exception=403):
+    return render(request, 'blog/403.html' )
+
+#def page_not_found(request):
+#    return render(request, 'blog/404.html', locals())
+
+def page_not_found(request, exception=404):
+    return render(request,'blog/404.html')
+
+def page_error(request):
+    return render(request, 'blog/500.html', locals())
+

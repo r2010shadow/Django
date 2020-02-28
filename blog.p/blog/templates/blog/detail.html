@@ -19,12 +19,12 @@
                     &nbsp;&nbsp;&nbsp;&nbsp;分类：
                     {% for category in entry.category.all %}
                         <!--   &nbsp;&nbsp;<a href="#">{{ category.name }}</a>  -->
-                          <a href="{% url 'blog:blog_category' category.id %}">{{ category.name }}</a>
+                        <a href="{% url 'blog:blog_category' category.id %}">{{ category.name }}</a>
                     {% endfor %}
 
                     &nbsp;&nbsp;&nbsp;&nbsp;标签：
                     {% for tag in entry.tags.all %}
-                          <a href="{% url 'blog:blog_tag' tag.id %}">{{ tag.name }}</a>
+                        <a href="{% url 'blog:blog_tag' tag.id %}">{{ tag.name }}</a>
                     {% endfor %}
 
                     &nbsp;&nbsp;&nbsp;&nbsp;浏览量：
@@ -42,6 +42,14 @@
             </div>
 
             <div class="col-md-3">
+                {% block toc %}
+                    <div class="row">
+                        <div class="widget">
+                            <h3>博客目录</h3>
+                            {{ entry.toc|safe }}
+                        </div>
+                    </div>
+                {% endblock %}
                 {% include 'blog/right_side_bar.html' %}
             </div>
 

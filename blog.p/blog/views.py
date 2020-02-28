@@ -1,9 +1,10 @@
-from django.shortcuts import render,get_object_or_404,redirect
+from django.shortcuts import render, get_object_or_404, redirect
 from . import models
 import markdown, pygments
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
-
+from django_comments.models import Comment
+from django_comments import models as comment_models
 
 
 def make_paginator(objects, page, num=3):
@@ -131,7 +132,7 @@ def index(request):
 
 
 def detail(request, blog_id):
-    #entry = models.Entry.objects.get(id=blog_id)  # detail.html
+    # entry = models.Entry.objects.get(id=blog_id)  # detail.html
     entry = get_object_or_404(models.Entry, id=blog_id)
 
     md = markdown.Markdown(extensions=[
@@ -143,14 +144,28 @@ def detail(request, blog_id):
     entry.toc = md.toc
     entry.increase_visiting()
 
+    comment_list = list()
+
+    def get_comment_list(comments):
+        for comment in comments:
+            comment_list.append(comment)
+            children = comment.child_comment.all()
+            if len(children) > 0:
+                get_comment_list(children)
+
+    top_comments = Comment.objects.filter(object_pk=blog_id, parent_comment=None,
+                                          content_type__app_label='blog').order_by('-submit_date')
+
+    get_comment_list(top_comments)
+
     return render(request, 'blog/detail.html', locals())
 
 
 def category(request, category_id):
     c = models.Category.objects.get(id=category_id)
     entries = models.Entry.objects.filter(category=c)
-    page = request.GET.get('page',1)
-    entry_list,paginator = make_paginator(entries, page)
+    page = request.GET.get('page', 1)
+    entry_list, paginator = make_paginator(entries, page)
     page_data = pagination_data(paginator, page)
 
     return render(request, 'blog/index.html', locals())
@@ -162,7 +177,7 @@ def tag(request, tag_id):
         entries = models.Entry.objects.all()
     else:
         entries = models.Entry.objects.filter(tags=t)
-    page = request.GET.get('page',1)
+    page = request.GET.get('page', 1)
     entry_list, paginator = make_paginator(entries, page)
     page_data = pagination_data(paginator, page)
     return render(request, 'blog/index.html', locals())
@@ -183,24 +198,31 @@ def search(request):
 
 
 def archives(request, year, month):
-    entries = models.Entry.objects.filter(created_time__year=year,created_time__month=month)
+    entries = models.Entry.objects.filter(created_time__year=year, created_time__month=month)
     page = request.GET.get('page', 1)
     entry_list, paginator = make_paginator(entries, page)
     page_data = pagination_data(paginator, page)
     return render(request, 'blog/index.html', locals())
 
 
-
-#def permission_denied(request, exception, template_name='blog/403.html'):
+# def permission_denied(request, exception, template_name='blog/403.html'):
 def permission_denied(request, exception=403):
-    return render(request, 'blog/403.html' )
+    return render(request, 'blog/403.html')
 
-#def page_not_found(request):
+
+# def page_not_found(request):
 #    return render(request, 'blog/404.html', locals())
 
 def page_not_found(request, exception=404):
-    return render(request,'blog/404.html')
+    return render(request, 'blog/404.html')
+
 
 def page_error(request):
     return render(request, 'blog/500.html', locals())
 
+
+def replay(request, comment_id):
+    if not request.session.get('login', None) and not request.user.is_authenticated():
+        return redirect('/')
+    parent_comment = get_object_or_404(comment_models.Comment, id=comment_id)
+    return render(request, 'blog/reply.html', locals())

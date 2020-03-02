@@ -22,6 +22,7 @@ def acc_login(request):
     return render(request,'login.html',{'error_msg':error_msg})
 
 
+
 def acc_logout(request):
     logout(request)
     return redirect("acc_login")

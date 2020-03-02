@@ -17,13 +17,13 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path,include
-from . import views
+from .views import acc_login,acc_logout
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('crm/', include('crm.urls')),
-    path('login/', views.acc_login),
-    path('logout/', views.acc_logout,name='logout'),
+    path('login/', acc_login, name='acc_login'),  # accouts, https://www.jianshu.com/p/4e896d42b6c3
+    path('logout/', acc_logout,name='acc_logout'),
 
 ]

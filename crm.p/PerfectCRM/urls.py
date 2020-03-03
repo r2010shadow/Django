@@ -23,7 +23,8 @@ from .views import acc_login,acc_logout
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('crm/', include('crm.urls')),
-    path('login/', acc_login, name='acc_login'),  # accouts, https://www.jianshu.com/p/4e896d42b6c3
+    path('login/', acc_login, name='acc_login'),  # accounts, https://www.jianshu.com/p/4e896d42b6c3
     path('logout/', acc_logout,name='acc_logout'),
+    path('kingadmin/', include('kingadmin.urls')),
 
 ]

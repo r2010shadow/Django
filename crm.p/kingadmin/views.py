@@ -1,5 +1,10 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate,login,logout
+from . import app_setup
+from .sites import site
+from django.contrib.auth.decorators import login_required
+
+
 
 
 def acc_login(request):
@@ -24,4 +29,15 @@ def acc_logout(request):
 
 
 def app_index(request):
-    return render(request, 'kingadmin/app_index.html')
+    return render(request, 'kingadmin/app_index.html',{'site':site})
+
+
+app_setup.kingadmin_auto_discover()
+print('site',site.enable_admins)
+
+@login_required
+def table_obj_list(request, app_name, model_name):
+    admin_class = site.enable_admins[app_name][model_name]
+    querysets = admin_class.model.objects.all()
+
+    return render(request, 'kingadmin/table_obj_list.html',{'querysets': querysets})

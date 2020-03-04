@@ -10,14 +10,14 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
-from django.urls import reverse_lazy    #https://www.jianshu.com/p/4e896d42b6c3
+from django.urls import reverse_lazy  # https://www.jianshu.com/p/4e896d42b6c3
+
 LOGIN_URL = reverse_lazy('acc_login')
 
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -29,7 +29,6 @@ SECRET_KEY = 'f_)@+=l)zkz2uo7088qpa$kd81n@tj^zqdx3f4%5hrn5t_$ou-'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -61,7 +60,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'templates'),
                  os.path.join(BASE_DIR, 'kingadmin/templates')]
-                 ,
+        ,
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -76,14 +75,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'PerfectCRM.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        #'ENGINE': 'django.db.backends.sqlite3',
-        #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'perfectcrm',  # 数据库名字
         'USER': 'root',  # 账号
@@ -92,7 +90,6 @@ DATABASES = {
         'PORT': '3306',  # 端口
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -112,7 +109,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
@@ -126,7 +122,6 @@ USE_L10N = True
 
 USE_TZ = False
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
@@ -135,4 +130,3 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'statics'),
     os.path.join(BASE_DIR, 'kingadmin/statics'),
 )
-

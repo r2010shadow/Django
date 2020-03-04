@@ -40,4 +40,43 @@ def table_obj_list(request, app_name, model_name):
     admin_class = site.enable_admins[app_name][model_name]
     querysets = admin_class.model.objects.all()
 
-    return render(request, 'kingadmin/table_obj_list.html',{'querysets': querysets})
+    return render(request, 'kingadmin/table_obj_list.html',{'querysets': querysets,'admin_class':admin_class})
+
+
+def get_filter_result(request, querysets):
+    filter_conditions = {}
+    for key, val in request.GET.items():
+        if val:
+            filter_conditions[key] = val
+
+    return querysets.filter(**filter_conditions),filter_conditions
+
+
+@login_required
+def table_obj_list(request, app_name, model_name):
+    admin_class = site.enable_admins[app_name][model_name]
+    querysets = admin_class.model.objects.all()
+    querysets, filter_conditions = get_filter_result(request, querysets)
+    admin_class.filter_conditions = filter_conditions
+    return render(request, 'kingadmin/table_obj_list.html',
+                  {'querysets':querysets, 'admin_class':admin_class})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

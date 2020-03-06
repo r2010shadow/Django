@@ -67,7 +67,7 @@ def build_table_row(obj, admin_class):
     ele = ''
 
     if admin_class.list_display:
-        for column_name in admin_class.list_display:
+        for index, column_name in enumerate(admin_class.list_display):
 
             # column_data = getattr(obj, column_name)
             column_obj = admin_class.model._meta.get_field(column_name)
@@ -77,9 +77,13 @@ def build_table_row(obj, admin_class):
                 column_data = getattr(obj, column_name)
 
             td_ele = "<td>%s</td>" % column_data
+
+            if index == 0:
+                td_ele = "<td><a href='%s/change/'>%s</a></td>" % (obj.id, column_data)
+
             ele += td_ele
     else:
-        td_ele = "<td>%s</td>"%obj
+        td_ele = "<td><a href='%s/change/'>%s</a></td>"%(obj.id,obj)
         ele += td_ele
 
     return mark_safe(ele)

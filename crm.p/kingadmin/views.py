@@ -4,7 +4,7 @@ from . import app_setup
 from .sites import site
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator,PageNotAnInteger,EmptyPage
-
+from kingadmin import form_handle
 
 
 
@@ -88,22 +88,12 @@ def table_obj_list(request, app_name, model_name):
     return render(request, 'kingadmin/table_obj_list.html',
                   {'querysets':querysets, 'admin_class':admin_class})
 
+@login_required
+def table_obj_change(request, app_name, model_name, obj_id):
 
+    admin_class = site.enable_admins[app_name][model_name]
+    model_form = form_handle.create_dynamic_model_form(admin_class)
 
+    form_obj = model_form()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return render(request, 'kingadmin/table_obj_change.html',locals())

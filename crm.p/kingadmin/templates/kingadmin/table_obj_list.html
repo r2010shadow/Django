@@ -6,6 +6,18 @@
 {% block right-content-container %}
     <h2 class="page-header">app</h2>
 
+
+<form class="form-horizontal">
+    {% for field in form_obj %}
+    <div class="form-group">
+        <label class="col-sm-2 control-label">{{ field.label }}</label>
+        <div class="col-sm-10">
+            {{ field }}
+        </div>
+    </div>
+    {% endfor %}
+</form>
+
     <!-- 过滤 -->
     <div>
         {% if admin_class.list_filter %}

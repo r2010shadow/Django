@@ -55,6 +55,13 @@
         {% endfor %}
     {% endif %}
 
+
+    <div class="col-sm-2">
+        <a class="btn btn-danger" href=
+                "{% url 'obj_delete' app_name model_name form_obj.instance.id %}">删除</a>
+    </div>
+
+
     <div class="form-group">
         <div class="col-sm-offset-11 col-sm-2">
             <button type="提交" class="btn btn-info">保存</button>

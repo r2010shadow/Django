@@ -112,6 +112,14 @@ def table_obj_add(request, app_name, model_name):
     return render(request, 'kingadmin/table_obj_add.html', locals())
 
 
+def table_obj_delete(request, app_name, model_name, obj_id):
+
+    admin_class = site.enable_admins[app_name][model_name]
+    obj = admin_class.model.objects.get(id=obj_id)
+
+    return render(request, 'kingadmin/table_obj_delete.html', locals())
+
+
 
 
 

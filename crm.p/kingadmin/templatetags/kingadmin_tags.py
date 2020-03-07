@@ -99,3 +99,29 @@ def get_obj_field_val(form_obj, field):
     return getattr(form_obj.instance, field)
 
 
+@register.simple_tag
+def get_available_m2m_data(field_name,form_obj, admin_class):
+
+    field_obj = admin_class.model._meta.get_field(field_name)
+
+    obj_list = set(field_obj.related_model.objects.all())
+
+    selected_data = set(getattr(form_obj.instance, field_name).all())
+
+    return obj_list - selected_data
+
+
+@register.simple_tag
+def get_selected_m2m_data(field_name, form_obj, admin_class):
+
+    selected_data = getattr(form_obj.instance, field_name).all()
+
+    return selected_data
+
+
+
+
+
+
+
+

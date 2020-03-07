@@ -5,3 +5,4 @@ class BaseKingAdmin(object):
     search_fields = []
 
     readonly_fields = []
+    filter_horizontal = []

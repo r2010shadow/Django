@@ -91,3 +91,11 @@ def build_table_row(obj, admin_class):
 @register.simple_tag
 def get_model_name(admin_class):
     return admin_class.model._meta.model_name.upper()
+
+
+@register.simple_tag
+def get_obj_field_val(form_obj, field):
+
+    return getattr(form_obj.instance, field)
+
+

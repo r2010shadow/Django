@@ -3,11 +3,19 @@ from django.forms import ModelForm
 
 #动态ModelForm增加自定义样式
 
-def create_dynamic_model_form(admin_class):
+def create_dynamic_model_form(admin_class, form_add=False):
 
     class Meta:
         model = admin_class.model
         fields = "__all__"
+
+        if not form_add:
+            exclude = admin_class.readonly_fields
+            admin_class.form_add = False
+        else:
+            admin_class.form_add = True
+
+        exclude = admin_class.readonly_fields
 
     def __new__(cls, *args, **kwargs):
         for field_name in cls.base_fields:

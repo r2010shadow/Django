@@ -2,7 +2,7 @@
 
 {% load kingadmin_tags %}
 
-<form class="form-horizontal" method="post">
+<form class="form-horizontal" method="post" onsubmit="VerificationBeforeFormSubmit()">
     {% csrf_token %}
     {{ form_obj.errors }}
     {% for field in form_obj %}
@@ -11,6 +11,7 @@
             <div class="col-sm-10">
                 {% if field.name in admin_class.filter_horizontal %}
                     <div class="col-lg-5">
+                        <input type="search" class="form-control" oninput="FuzzSearch(this)" placeholder="Filter">
                         <select id="id_{{ field.name }}_from" multiple class="form-control">
                             {% get_available_m2m_data field.name form_obj admin_class as available_m2m_data %}
                             {% for obj in available_m2m_data %}
@@ -18,15 +19,21 @@
                                         value="{{ obj.id }}">{{ obj }}</option>
                             {% endfor %}
                         </select>
+                        <p><a onclick="MoveAllElements('id_{{ field.name }}_from','id_{{ field.name }}_to')">选择全部</a>
+                        </p>
                     </div>
 
                     <div class="col-lg-5">
-                        <select multiple class="form-control">
+                        <select tag="selected_m2m" id="id_{{ field.name }}_to" multiple class="form-control"
+                                name="{{ field.name }}">
                             {% get_selected_m2m_data field.name form_obj admin_class as selected_m2m_data %}
                             {% for obj in selected_m2m_data %}
-                                <option value="{{ obj.id }}">{{ obj }}</option>
+                                <option value="{{ obj.id }}"
+                                        ondblclick="MoveSelectedOption(this,'id_{{ field.name }}_from')">{{ obj }}</option>
                             {% endfor %}
                         </select>
+                        <p><a onclick="MoveAllElements('id_{{ field.name }}_to','id_{{ field.name }}_from')">移除全部</a>
+                        </p>
                     </div>
 
                 {% else %}
@@ -49,8 +56,69 @@
     {% endif %}
 
     <div class="form-group">
-        <div class="col-sm-offset-11 col-sm-10">
+        <div class="col-sm-offset-11 col-sm-2">
             <button type="提交" class="btn btn-info">保存</button>
         </div>
     </div>
 </form>
+
+
+<script>
+    function MoveSelectedOption(ele, target_id) {
+        var new_target_id = $(ele).parent().attr('id');
+        var option = "<option value='" + $(ele).val() +
+            "'ondblclick=MoveSelectedOption(this,'" +
+            new_target_id + "') >" + $(ele).text() + "</option>";
+        $("#" + target_id).append(option);
+        $(ele).remove();
+
+    }
+
+    function VerificationBeforeFormSubmit() {
+        $("select[tag] option").prop('selected', true);
+    }
+
+
+    function MoveAllElements(from_id, to_id) {
+        console.log($("#" + from_id).children())
+        $("#" + from_id).children().each(function () {
+            MoveSelectedOption(this, to_id);
+        })
+    }
+
+    function FuzzSearch(ele) {
+        console.log($(ele).val())
+        var search_text = $(ele).val().toUpperCase();
+        $(ele).next().children().each(
+            function () {
+                if ($(this).text().toUpperCase().search(search_text) != -1) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            })
+    }
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

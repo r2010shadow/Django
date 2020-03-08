@@ -4,10 +4,22 @@ from . import models
 
 
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ['name','source','contact_type','contact','consultant',
-                    'consult_content','status','date']
+    #显示
+    list_display = ['name','source','contact_type','contact','consultant','consult_content','status','date']
+    #过滤
     list_filter = ['source','consultant','status','date']
+    #搜索，consultant是外键，必须加“__字段名”
     search_fields = ['contact','consultant__name']
+    #只读字段,不能修改
+    # readonly_fields = ['contact','status']
+    filter_horizontal = ['consult_courses']
+    #每页显示多少条数据
+    list_per_page = 8
+    #批量操作
+    actions = ['change_status',]
+
+    def change_status(self,request,querysets):   #querysets是你选中的所有对象
+        querysets.update(status=2)               # 批量状态改成"已退学"
 
 
 

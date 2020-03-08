@@ -29,8 +29,7 @@ def build_filter_ele(filter_column, admin_class):
             filter_ele += option
 
     except AttributeError as e:
-        filter_ele = "<div class='col-md-2'>%s<select class='form-control' name='%s__gte'>" % (
-            filter_column, filter_column)
+        filter_ele = "<div class='col-md-2'>%s<select class='form-control' name='%s__gte'>" % (filter_column, filter_column)
         # get_internal_type():获取字段属性
         # 因为时间的过滤方式是固定的（今天，过去七天，一个月.....），而不是从后台获取的
         if column_obj.get_internal_type() in ('DateField', 'DateTimeField'):
@@ -115,6 +114,86 @@ def get_selected_m2m_data(field_name, form_obj, admin_class):
     selected_data = getattr(form_obj.instance, field_name).all()
 
     return selected_data
+
+
+@register.simple_tag
+def get_sorted_column(column, sorted_column, forloop):
+    '''排序'''
+    if column in sorted_column:  # 如果这一列被排序了
+        # 要判断上一次排序是按什么顺序，本次取反
+        last_sort_index = sorted_column[column]
+        if last_sort_index.startswith('-'):
+            # 利用切片，去掉‘-’
+            this_time_sort_index = last_sort_index.strip('-')
+        else:
+            # 加上 '-'
+            this_time_sort_index = '-%s' % last_sort_index
+        return this_time_sort_index
+    else:
+        return forloop
+
+
+@register.simple_tag
+def get_current_sorted_column_index(sorted_column):
+    #三元运算，如果为True执行左边的，为False，执行右边的（''）
+    return list(sorted_column.values())[0] if sorted_column else ''
+
+
+@register.simple_tag
+def render_paginator(querysets, admin_class, sorted_column):
+    '''分页'''
+    ele = '''
+        <ul class="pagination">
+    '''
+    # page_range是所有的页，querysets.number是当前页
+    for i in querysets.paginator.page_range:
+        # 显示前后三页，abs是绝对值
+        if abs(querysets.number - i) < 3:
+            active = ''
+            if querysets.number == i:  # 如果是当前页,class='active'
+                active = 'active'
+            # 组合过滤字段
+            filter_ele = render_filtered_args(admin_class)
+            # 组合排序字段
+            sorted_ele = ''
+            if sorted_column:
+                sorted_ele = '&_o=%s' % list(sorted_column.values())[0]
+            p_ele = '''<li class="%s"><a href="?page=%s%s%s">%s</a></li>''' % (active, i, filter_ele, sorted_ele, i)
+            ele += p_ele
+    ele += "</ul>"
+    return mark_safe(ele)
+
+
+@register.simple_tag
+def render_filtered_args(admin_class, render_html=True):
+    '''拼接过滤的字段'''
+    if admin_class.filter_conditions:
+        ele = ''
+        for k, v in admin_class.filter_conditions.items():
+            ele += '&%s=%s' % (k, v)
+        if render_html:
+            return mark_safe(ele)
+        else:
+            return ele
+    else:
+        return ''
+
+
+@register.simple_tag
+def render_sorted_arrow(column, sorted_column):
+    '''排序的图标'''
+
+    if column in sorted_column:
+        last_sort_index = sorted_column[column]
+        if last_sort_index.startswith('-'):
+            arrow_direction = 'bottom'
+
+        else:
+            arrow_direction = 'top'
+        ele = '''<span class="glyphicon glyphicon-triangle-%s" aria-hidden="true"></span>''' % arrow_direction
+        return mark_safe(ele)
+
+    return ''
 
 
 @register.simple_tag

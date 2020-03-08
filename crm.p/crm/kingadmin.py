@@ -12,6 +12,11 @@ class CustomerAdmin(BaseKingAdmin):
     readonly_fields = ['contact', 'status']
     filter_horizontal = ['consult_courses']
 
+    actions = ['change_status',]
+
+    def change_status(self, request, querysets): #querysets是选中的所有对象
+        querysets.update(status=1)
+
 
 site.register(models.CustomerInfo, CustomerAdmin)
 site.register(models.Role)

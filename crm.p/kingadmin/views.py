@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,reverse
 from django.contrib.auth import authenticate, login, logout
 from . import app_setup
 from .sites import site
@@ -43,6 +43,7 @@ def table_obj_list(request, app_name, model_name):
     # 拿到admin_class后，通过它找到拿到model
     admin_class = site.enable_admins[app_name][model_name]
 
+    # Action
     if request.method == 'POST':
         selected_action = request.POST.get('action')
         selected_ids = json.loads(request.POST.get('selected_ids'))
@@ -57,6 +58,34 @@ def table_obj_list(request, app_name, model_name):
             if response:
                 return response
 
+        # code from :https://www.cnblogs.com/derek1184405959/p/8981691.html
+        # if request.POST.get('action') and request.POST.get('selected_ids'):
+        #     # 获取action，这个action是从djadmin中actions列表中定义的
+        #     selected_action = request.POST.get('action')
+        #     # 获取选中的id
+        #     import json
+        #     selected_ids = json.loads(request.POST.get('selected_ids'))
+        #     print(selected_ids)  # 列表类型：['7', '6', '3']
+        #     # 获取所有选中id的对象
+        #     selected_objs = admin_class.model.objects.filter(id__in=selected_ids)
+        #     # 获取djadmin中定义的actions函数
+        #     admin_action_func = getattr(admin_class, selected_action)
+        #
+        #     # 默认删除功能
+        #     if selected_action == 'delete_selected_objs':
+        #         print('执行{}删除功能'.format(selected_action))
+        #         # 提交的数据进行删除
+        #         if request.POST.get('delete_confirm') == 'yes':
+        #             admin_class.model.objects.filter(id__in=selected_ids).delete()
+        #             return redirect(reverse('kingadmin:table_obj_list', args=(app_name, model_name)))
+        #         # 默认情况下显示table_delete.objs.html的内容
+        #         return admin_action_func(request, selected_objs)  # 返回admin_action_func执行方法不用再跳回来
+        #
+        #     # 将查询集执行action的功能
+        #     admin_action_func(request, selected_objs)
+        #     print('执行{}的功能！'.format(selected_action))
+        #     # 防止刷新网页提交，使用跳转
+        #     return redirect(reverse('kingadmin:table_obj_list', args=(app_name, model_name)))
 
 
 
@@ -68,7 +97,7 @@ def table_obj_list(request, app_name, model_name):
     # 搜索
     querysets = get_searched_result(request, querysets, admin_class)
     # 显示搜索的search_key
-    admin_class.search_key = request.GET.get('_q','')
+    admin_class.search_key = request.GET.get('_q', '')
 
     # 排序
     querysets, sorted_column = get_orderby_result(request, querysets, admin_class)
@@ -89,15 +118,15 @@ def table_obj_list(request, app_name, model_name):
                    'sorted_column': sorted_column})
 
 
-def get_filter_result(request,querysets):
+def get_filter_result(request, querysets):
     filter_conditions = {}
-    #获取过滤的字段
-    for key,val in request.GET.items():
-        if key in ('page','_o','_q'):continue
+    # 获取过滤的字段
+    for key, val in request.GET.items():
+        if key in ('page', '_o', '_q'): continue
         if val:
             filter_conditions[key] = val
-    #返回过滤后的数据
-    return querysets.filter(**filter_conditions),filter_conditions
+    # 返回过滤后的数据
+    return querysets.filter(**filter_conditions), filter_conditions
 
 
 def get_orderby_result(request, querysets, admin_class):
@@ -120,18 +149,16 @@ def get_orderby_result(request, querysets, admin_class):
 
 
 def get_searched_result(request, querysets, admin_class):
-
     search_key = request.GET.get('_q')
     if search_key:
         q = Q()
         q.connector = 'OR'
 
         for search_field in admin_class.search_fields:
-            q.children.append(("%s__contains"%search_field, search_key))
+            q.children.append(("%s__contains" % search_field, search_key))
 
         return querysets.filter(q)
     return querysets
-
 
 
 @login_required
@@ -148,13 +175,12 @@ def table_obj_change(request, app_name, model_name, obj_id):
         form_obj = model_form(instance=obj, data=request.POST)
         if form_obj.is_valid():
             form_obj.save()
-            return redirect("/kindadmin/%s/%s/" % (app_name, model_name))
+            return redirect("/kingadmin/%s/%s/" % (app_name, model_name))
     return render(request, 'kingadmin/table_obj_change.html', locals())
 
 
 @login_required
 def table_obj_add(request, app_name, model_name):
-
     admin_class = site.enable_admins[app_name][model_name]
     model_form = form_handle.create_dynamic_model_form(admin_class, form_add=True)
 
@@ -164,24 +190,12 @@ def table_obj_add(request, app_name, model_name):
         form_obj = model_form(data=request.POST)
         if form_obj.is_valid():
             form_obj.save()
-            return redirect("/kingadmin/%s/%s/"%(app_name, model_name))
+            return redirect("/kingadmin/%s/%s/" % (app_name, model_name))
     return render(request, 'kingadmin/table_obj_add.html', locals())
 
 
 def table_obj_delete(request, app_name, model_name, obj_id):
-
     admin_class = site.enable_admins[app_name][model_name]
     obj = admin_class.model.objects.get(id=obj_id)
 
     return render(request, 'kingadmin/table_obj_delete.html', locals())
-
-
-
-
-
-
-
-
-
-
-

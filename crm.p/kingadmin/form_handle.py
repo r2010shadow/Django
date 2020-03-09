@@ -9,13 +9,13 @@ def create_dynamic_model_form(admin_class, form_add=False):
         model = admin_class.model
         fields = "__all__"
 
-        if not form_add:
+        if not form_add:   # change
             exclude = admin_class.readonly_fields
             admin_class.form_add = False
-        else:
+        else:              # add
             admin_class.form_add = True
 
-        exclude = admin_class.readonly_fields
+
 
     def __new__(cls, *args, **kwargs):
         for field_name in cls.base_fields:

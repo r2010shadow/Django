@@ -15,8 +15,7 @@ class CustomerAdmin(BaseKingAdmin):
     actions = ['change_status',]
 
     def change_status(self, request, querysets): #querysets是选中的所有对象
-        querysets.update(status=1)
-
+        querysets.update(status=3)      # (0,'未报名'),(1,'已报名'),(2,'已经退学'),(3,'已经结业')
 
 site.register(models.CustomerInfo, CustomerAdmin)
 site.register(models.Role)

@@ -34,7 +34,7 @@ class CustomerInfo(models.Model):
     #可以咨询多个课程
     consult_courses = models.ManyToManyField('Course',verbose_name='咨询课程')
     consult_content = models.TextField(verbose_name='咨询内容',)
-    status_choices = ((0,'未报名'),(1,'已报名'),(2,'已经退学'))
+    status_choices = ((0,'未报名'),(1,'已报名'),(2,'已经退学'),(3,'已经结业'))
     status = models.SmallIntegerField('客户状态',choices=status_choices)
     consultant = models.ForeignKey('UserProfile',verbose_name='课程顾问',on_delete=models.CASCADE)
 

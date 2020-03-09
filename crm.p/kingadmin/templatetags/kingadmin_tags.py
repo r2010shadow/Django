@@ -100,12 +100,16 @@ def get_obj_field_val(form_obj, field):
 
 @register.simple_tag
 def get_available_m2m_data(field_name, form_obj, admin_class):
+    '''返回的是m2m字段关联表的所有数据'''
+    #获取字段的对象
     field_obj = admin_class.model._meta.get_field(field_name)
-
+    #consult_courses = models.ManyToManyField('Course',verbose_name='咨询课程')
+    #consult_courses是一个m2m，通过consult_courses对象获取到Course（也就是获取到所有咨询的课程）
+    #所有咨询课程的集合
     obj_list = set(field_obj.related_model.objects.all())
-
+    #选中的咨询课程集合
     selected_data = set(getattr(form_obj.instance, field_name).all())
-
+    #返回的时候，集合求差集，得到未选中的咨询课程（左边）
     return obj_list - selected_data
 
 

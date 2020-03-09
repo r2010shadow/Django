@@ -1,5 +1,6 @@
 from django.contrib import admin
 from . import models
+from kingadmin.admin_base import BaseKingAdmin
 
 
 
@@ -18,11 +19,14 @@ class CustomerAdmin(admin.ModelAdmin):
     #批量操作
     actions = ['change_status',]
 
-    def change_status(self,request,querysets):   #querysets是你选中的所有对象
-        querysets.update(status=2)               # 批量状态改成"已退学"
+    def change_status(self, request, querysets):  # querysets是你选中的所有对象
+        querysets.update(status=1)
 
 
 
+
+class StudentAdmin(BaseKingAdmin):
+    filter_horizontal = ['class_grades']
 
 admin.site.register(models.Role)
 admin.site.register(models.CustomerInfo, CustomerAdmin)

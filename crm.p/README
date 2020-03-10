@@ -1,9 +1,8 @@
-
 Environment:
 
 
 Request Method: GET
-Request URL: http://127.0.0.1:8000/crm/
+Request URL: http://127.0.0.1:8000/kingadmin/crm/customerinfo/2/change/
 
 Django Version: 3.0.3
 Python Version: 3.6.1
@@ -14,16 +13,11 @@ Installed Applications:
  'django.contrib.sessions',
  'django.contrib.messages',
  'django.contrib.staticfiles',
- 'blog']
+ 'crm',
+ 'kingadmin']
 Installed Middleware:
 ['django.middleware.security.SecurityMiddleware',
- 'django.contrib.sessions.middleware.SessionMiddleware',
- 'django.middleware.common.CommonMiddleware',
- 'django.middleware.csrf.CsrfViewMiddleware',
- 'django.contrib.auth.middleware.AuthenticationMiddleware',
- 'django.contrib.messages.middleware.MessageMiddleware',
- 'django.middleware.clickjacking.XFrameOptionsMiddleware']
-
+ 'django.contrib.sessions.middleware.
 
 
 crm study:

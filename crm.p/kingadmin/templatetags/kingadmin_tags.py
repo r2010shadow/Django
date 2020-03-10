@@ -107,17 +107,27 @@ def get_available_m2m_data(field_name, form_obj, admin_class):
     #consult_courses是一个m2m，通过consult_courses对象获取到Course（也就是获取到所有咨询的课程）
     #所有咨询课程的集合
     obj_list = set(field_obj.related_model.objects.all())
-    #选中的咨询课程集合
-    selected_data = set(getattr(form_obj.instance, field_name).all())
-    #返回的时候，集合求差集，得到未选中的咨询课程（左边）
-    return obj_list - selected_data
+
+    # 如果是change
+    if form_obj.instance.id:
+        #选中的咨询课程集合
+        selected_data = set(getattr(form_obj.instance, field_name).all())
+        #返回的时候，集合求差集，得到未选中的咨询课程（左边）
+        return obj_list - selected_data
+    else:
+        return obj_list
 
 
 @register.simple_tag
 def get_selected_m2m_data(field_name, form_obj, admin_class):
-    selected_data = getattr(form_obj.instance, field_name).all()
 
-    return selected_data
+    # 如果是change
+    if form_obj.instance.id:
+        selected_data = getattr(form_obj.instance, field_name).all()
+
+        return selected_data
+    else:
+        return []
 
 
 @register.simple_tag
@@ -234,3 +244,10 @@ def display_all_related_objs(obj):
     ele += "</ul>"
 
     return ele
+
+
+@register.simple_tag
+def get_model_verbose_name(admin_class):
+
+    return admin_class.model._meta.verbose_name
+

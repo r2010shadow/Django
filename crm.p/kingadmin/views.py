@@ -59,34 +59,6 @@ def table_obj_list(request, app_name, model_name):
                 return response
 
         # code from :https://www.cnblogs.com/derek1184405959/p/8981691.html
-        # if request.POST.get('action') and request.POST.get('selected_ids'):
-        #     # 获取action，这个action是从djadmin中actions列表中定义的
-        #     selected_action = request.POST.get('action')
-        #     # 获取选中的id
-        #     import json
-        #     selected_ids = json.loads(request.POST.get('selected_ids'))
-        #     print(selected_ids)  # 列表类型：['7', '6', '3']
-        #     # 获取所有选中id的对象
-        #     selected_objs = admin_class.model.objects.filter(id__in=selected_ids)
-        #     # 获取djadmin中定义的actions函数
-        #     admin_action_func = getattr(admin_class, selected_action)
-        #
-        #     # 默认删除功能
-        #     if selected_action == 'delete_selected_objs':
-        #         print('执行{}删除功能'.format(selected_action))
-        #         # 提交的数据进行删除
-        #         if request.POST.get('delete_confirm') == 'yes':
-        #             admin_class.model.objects.filter(id__in=selected_ids).delete()
-        #             return redirect(reverse('kingadmin:table_obj_list', args=(app_name, model_name)))
-        #         # 默认情况下显示table_delete.objs.html的内容
-        #         return admin_action_func(request, selected_objs)  # 返回admin_action_func执行方法不用再跳回来
-        #
-        #     # 将查询集执行action的功能
-        #     admin_action_func(request, selected_objs)
-        #     print('执行{}的功能！'.format(selected_action))
-        #     # 防止刷新网页提交，使用跳转
-        #     return redirect(reverse('kingadmin:table_obj_list', args=(app_name, model_name)))
-
 
 
     querysets = admin_class.model.objects.all().order_by('-id')
@@ -112,10 +84,7 @@ def table_obj_list(request, app_name, model_name):
     except EmptyPage:
         querysets = paginator.page(paginator.num_pages)
 
-    return render(request, 'kingadmin/table_obj_list.html',
-                  {'querysets': querysets,
-                   'admin_class': admin_class,
-                   'sorted_column': sorted_column})
+    return render(request, 'kingadmin/table_obj_list.html', locals())
 
 
 def get_filter_result(request, querysets):

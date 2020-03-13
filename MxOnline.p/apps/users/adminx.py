@@ -1,4 +1,5 @@
 import xadmin
+from xadmin import views
 
 
 from .models import EmailVerifyRecord,Banner
@@ -22,3 +23,31 @@ class BannerAdmin(object):
 
 
 xadmin.site.register(Banner, BannerAdmin)
+
+
+class BaseSetting(object):
+
+    enable_themes = True
+    use_bootswatch = True
+
+xadmin.site.register(views.BaseAdminView, BaseSetting)
+
+
+
+class GlobalSettings(object):
+
+    site_title = 'Xspace载人航天管理平台'
+
+    site_footer= 'XSPACE.'
+
+    menu_style = 'accordion'   # 收起菜单
+
+xadmin.site.register(views.CommAdminView, GlobalSettings)
+
+
+
+
+
+
+
+

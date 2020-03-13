@@ -27,7 +27,11 @@ SECRET_KEY = '55s8jp&!zr*#ib2k!0x9j5*sj@c!^&&$wsi^!+@-vo(9ol8sw3'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+
+AUTHENTICATION_BACKENDS = (
+    'users.views.CustomBackend',
+)
 
 
 # Application definition
@@ -39,16 +43,21 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+
     'users',
     'course',
     'organization',
     'operation',
 
-    #  xadmin
+
     'xadmin',
     'crispy_forms',
-    'django.conf',
+    'reversion',
 
+    
+    'django.conf',
+    'captcha',
 ]
 
 AUTH_USER_MODEL = 'users.UserProfile'
@@ -68,7 +77,7 @@ ROOT_URLCONF = 'MxOnline.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -136,3 +145,33 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR,'static')
+]
+
+
+# 设置上传文件的路径
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')   #指定根目录
+
+#静态文件
+#STATICFILES_ROOT = os.path.join(BASE_DIR, 'static')
+
+#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.163.com'
+EMAIL_PORT = 25  # or 465
+#发送邮件的邮箱
+EMAIL_HOST_USER = 'r2010shadow@163.com'
+#在邮箱中设置的客户端授权密码
+EMAIL_HOST_PASSWORD = 'wa11ace'
+EMAIL_USE_TLS = True
+#收件人看到的发件人
+EMAIL_FROM = 'r2010shadow@163.com'
+
+
+
+
+
+
+

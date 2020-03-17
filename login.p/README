@@ -1,4 +1,5 @@
 
+TrainFrom: https://www.liujiangblog.com/course/django/110
 
 DATABASES = {
     'default': {

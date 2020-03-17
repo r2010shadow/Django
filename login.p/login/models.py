@@ -33,6 +33,6 @@ class ConfirmString(models.Model):
 
     class Meta:
 
-        ordering = ["-c_time"]
+        ordering = ["-c_time"]  #注册的提交时间
         verbose_name = "确认码"
         verbose_name_plural = "确认码"

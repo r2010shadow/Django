@@ -42,8 +42,8 @@ def send_email(email, code):
     html_content = '''
                     <p>注册了么<a href="http://{}/confirm/?code={}" target=blank>www.baidu.com</a>，\
                     这里是本案</p>
-                    <p>请点击链接完成注册确认！</p>
-                    <p>此链接有效期为{}天！</p>
+                    <p>点链接注册确认！</p>
+                    <p>有效期{}天！</p>
                     '''.format('127.0.0.1:8000', code, settings.CONFIRM_DAYS)
 
     msg = EmailMultiAlternatives(subject, text_content, settings.EMAIL_HOST_USER, [email])
@@ -56,6 +56,7 @@ def make_confirm_string(user):
     code = hash_code(user.name, now)
     models.ConfirmString.objects.create(code=code, user=user,)
     return code
+
 
 def hash_code(s, salt='mysite'):
     h = hashlib.sha256()

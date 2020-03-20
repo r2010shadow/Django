@@ -1,7 +1,37 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 import json
 from assets import models, asset_handler
+
+
+def index(request):
+
+    assets = models.Asset.objects.all()
+    return render(request, 'assets/index.html', locals())
+
+
+def dashboard(request):
+    pass
+    return render(request, 'assets/dashboard.html', locals())
+
+
+def detail(request, asset_id):
+
+    asset = get_object_or_404(models.Asset, id=asset_id)
+    return render(request, 'assets/detail.html', locals())
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 @csrf_exempt
